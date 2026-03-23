@@ -20,8 +20,8 @@ Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "bin\Release\net9.0-windows\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-; NOTA: Asegúrese de compilar en modo Release antes de ejecutar este script.
+Source: "bin\Release\net9.0-windows\win-x64\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+; NOTA: Asegúrese de compilar en modo Release con --self-contained true antes de ejecutar este script.
 
 [Icons]
 Name: "{group}\Sistema de Gestión CRA"; Filename: "{app}\SistemaGestionCRA.exe"

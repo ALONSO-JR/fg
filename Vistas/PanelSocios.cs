@@ -47,7 +47,19 @@ namespace SistemaGestionCRA.Vistas
                 }
             };
 
-            btnImportar = CrearBotonAccion("Importar Excel", 580, 70, Color.FromArgb(108, 117, 125));
+            btnImportar = CrearBotonAccion("Imprimir Carnet", 580, 70, Color.FromArgb(108, 117, 125));
+            btnImportar.Click += (s, e) => {
+                if (dgvSocios.SelectedRows.Count > 0) {
+                    var socio = (Socio)dgvSocios.SelectedRows[0].DataBoundItem;
+                    using var sfd = new SaveFileDialog { Filter = "PDF Files (*.pdf)|*.pdf", FileName = $"Carnet_{socio.RUT}.pdf" };
+                    if (sfd.ShowDialog() == DialogResult.OK) {
+                        var imp = new Logica.ImpresionServicio();
+                        string res = imp.GenerarCarnetSocioPdf(sfd.FileName, socio, "12345-6"); // RBD de ejemplo
+                        if (res == "OK") MessageBox.Show("Carnet generado.");
+                        else MessageBox.Show("Error: " + res);
+                    }
+                }
+            };
 
             dgvSocios = new DataGridView
             {

@@ -43,9 +43,18 @@ namespace SistemaGestionCRA.Vistas
             grpSocio.Controls.AddRange(new Control[] { txtCodigoSocio, lblSocioInfo });
 
             // Sección Ejemplar
-            var grpEjemplar = new GroupBox { Text = "Acción sobre Ejemplar", Location = new Point(490, 60), Size = new Size(450, 150) };
+            var grpEjemplar = new GroupBox { Text = "Acción sobre Ejemplar (Escaneo Masivo)", Location = new Point(490, 60), Size = new Size(450, 150) };
             txtCodigoEjemplar = new TextBox { Location = new Point(20, 30), Size = new Size(200, 25), PlaceholderText = "Escanear Código de Barras..." };
-            txtCodigoEjemplar.KeyDown += async (s, e) => { if (e.KeyCode == Keys.Enter) await ProcesarEjemplar(); };
+            txtCodigoEjemplar.KeyDown += async (s, e) => {
+                if (e.KeyCode == Keys.Enter) {
+                    await ProcesarEjemplar();
+                    if (socioActual != null && ejemplarActual != null && ejemplarActual.Estado == "Disponible") {
+                        await RealizarPrestamo();
+                    } else if (ejemplarActual != null && ejemplarActual.Estado == "Prestado") {
+                        await RealizarDevolucion();
+                    }
+                }
+            };
 
             lblEjemplarInfo = new Label { Text = "Ejemplar: No seleccionado", Location = new Point(20, 70), Size = new Size(400, 60), Font = new Font("Segoe UI", 10, FontStyle.Italic) };
             grpEjemplar.Controls.AddRange(new Control[] { txtCodigoEjemplar, lblEjemplarInfo });

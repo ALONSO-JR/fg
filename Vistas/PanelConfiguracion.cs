@@ -58,10 +58,16 @@ namespace SistemaGestionCRA.Vistas
 
             grpRespaldo.Controls.AddRange(new Control[] { btnRespaldo, btnRestaurar });
 
-            var grpMigracion = new GroupBox { Text = "Migración de Datos", Location = new Point(20, 300), Size = new Size(400, 120) };
-            var btnImportarABIES = new Button { Text = "Importar desde ABIES (CSV)", Location = new Point(50, 40), Size = new Size(300, 40), BackColor = Color.FromArgb(40, 167, 69), ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
+            var grpMigracion = new GroupBox { Text = "Migración de Datos", Location = new Point(20, 300), Size = new Size(400, 150) };
+            var btnImportarDbf = new Button { Text = "Importar desde ABIES (.DBF)", Location = new Point(50, 40), Size = new Size(300, 40), BackColor = Color.FromArgb(40, 167, 69), ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
+            btnImportarDbf.Click += (s, e) => {
+                using var form = new FormMigracionDbf(_db);
+                form.ShowDialog();
+            };
 
-            grpMigracion.Controls.Add(btnImportarABIES);
+            var btnImportarCSV = new Button { Text = "Importar desde CSV", Location = new Point(50, 90), Size = new Size(300, 40), BackColor = Color.FromArgb(108, 117, 125), ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
+
+            grpMigracion.Controls.AddRange(new Control[] { btnImportarDbf, btnImportarCSV });
 
             this.Controls.AddRange(new Control[] { lblTitulo, grpRespaldo, grpMigracion });
         }

@@ -67,7 +67,12 @@ namespace SistemaGestionCRA.Vistas
             try
             {
                 await conexion.ExecuteAsync("INSERT INTO Institucion (Nombre, RBD) VALUES (@Nombre, @RBD)", new { Nombre = txtNombreInst.Text, RBD = txtRBD.Text }, transaccion);
-                await conexion.ExecuteAsync("INSERT INTO Parametros (DiasPrestamo, MaxLibrosPorSocio) VALUES (@Dias, @Max)", new { Dias = (int)numDiasPrestamo.Value, Max = (int)numMaxLibros.Value }, transaccion);
+
+                string[] tipos = { "Libro", "Revista", "Manual", "Audiovisual", "Recurso Pedagógico" };
+                foreach (var tipo in tipos) {
+                    await conexion.ExecuteAsync("INSERT INTO ReglasPrestamo (TipoMaterial, DiasPrestamo, MaxLibros) VALUES (@Tipo, @Dias, @Max)",
+                                                 new { Tipo = tipo, Dias = (int)numDiasPrestamo.Value, Max = (int)numMaxLibros.Value }, transaccion);
+                }
 
                 transaccion.Commit();
                 this.DialogResult = DialogResult.OK;

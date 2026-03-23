@@ -16,13 +16,14 @@ namespace SistemaGestionCRA.Modelos
         public string? Email { get; set; }
     }
 
-    public class Parametros
+    public class ReglaPrestamo
     {
         public int Id { get; set; }
+        public string? TipoMaterial { get; set; }
         public int DiasPrestamo { get; set; }
-        public int MaxLibrosPorSocio { get; set; }
+        public int MaxLibros { get; set; }
         public int MaxRenovaciones { get; set; }
-        public double MultaDiaria { get; set; }
+        public int DiasSancionPorAtraso { get; set; }
     }
 
     public class Usuario
@@ -46,6 +47,8 @@ namespace SistemaGestionCRA.Modelos
         public string? Telefono { get; set; }
         public string? Email { get; set; }
         public string? Estado { get; set; }
+        public DateTime? BloqueadoHasta { get; set; }
+        public string? FotoPath { get; set; }
     }
 
     public class Ejemplar

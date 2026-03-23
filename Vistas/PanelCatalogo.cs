@@ -44,7 +44,35 @@ namespace SistemaGestionCRA.Vistas
                 }
             };
 
-            btnEtiquetas = CrearBotonAccion("Imprimir Etiquetas", 580, 70, Color.FromArgb(108, 117, 125));
+            btnEtiquetas = CrearBotonAccion("Imprimir Etiqueta", 580, 70, Color.FromArgb(108, 117, 125));
+
+            var btnMarc = CrearBotonAccion("Exportar MARC21", 720, 70, Color.FromArgb(0, 123, 255));
+            btnMarc.Click += (s, e) => {
+                using var sfd = new SaveFileDialog { Filter = "XML Files (*.xml)|*.xml", FileName = "Catalogo_MARC21.xml" };
+                if (sfd.ShowDialog() == DialogResult.OK) {
+                    using var conexion = _db.ObtenerConexion();
+                    conexion.Open();
+                    var ejemplares = conexion.Query<Ejemplar>("SELECT * FROM Ejemplares").ToList();
+                    var marc = new Logica.Marc21Servicio();
+                    string res = marc.ExportarAMarcXml(sfd.FileName, ejemplares);
+                    if (res == "OK") MessageBox.Show("Catálogo exportado en formato MARC21 XML.");
+                    else MessageBox.Show("Error: " + res);
+                }
+            };
+            this.Controls.Add(btnMarc);
+
+            btnEtiquetas.Click += (s, e) => {
+                if (dgvEjemplares.SelectedRows.Count > 0) {
+                    var ejemplar = (Ejemplar)dgvEjemplares.SelectedRows[0].DataBoundItem;
+                    using var sfd = new SaveFileDialog { Filter = "PDF Files (*.pdf)|*.pdf", FileName = $"Etiqueta_{ejemplar.CodigoBarras}.pdf" };
+                    if (sfd.ShowDialog() == DialogResult.OK) {
+                        var imp = new Logica.ImpresionServicio();
+                        string res = imp.GenerarEtiquetasPdf(sfd.FileName, ejemplar);
+                        if (res == "OK") MessageBox.Show("Etiqueta generada.");
+                        else MessageBox.Show("Error: " + res);
+                    }
+                }
+            };
 
             dgvEjemplares = new DataGridView {
                 Location = new Point(20, 110),

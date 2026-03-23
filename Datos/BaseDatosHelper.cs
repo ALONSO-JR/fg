@@ -35,13 +35,14 @@ namespace SistemaGestionCRA.Datos
                     Email TEXT
                 );",
 
-                // Parámetros
-                @"CREATE TABLE IF NOT EXISTS Parametros (
+                // Reglas de Préstamo por Tipo de Material
+                @"CREATE TABLE IF NOT EXISTS ReglasPrestamo (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    TipoMaterial TEXT UNIQUE NOT NULL, -- Libro, Revista, etc.
                     DiasPrestamo INTEGER DEFAULT 7,
-                    MaxLibrosPorSocio INTEGER DEFAULT 3,
+                    MaxLibros INTEGER DEFAULT 3,
                     MaxRenovaciones INTEGER DEFAULT 1,
-                    MultaDiaria REAL DEFAULT 0
+                    DiasSancionPorAtraso INTEGER DEFAULT 1 -- Días de bloqueo por día de atraso
                 );",
 
                 // Usuarios del sistema
@@ -51,6 +52,16 @@ namespace SistemaGestionCRA.Datos
                     PasswordHash TEXT NOT NULL,
                     Rol TEXT NOT NULL, -- Administrador, Encargado, Consulta
                     NombreCompleto TEXT
+                );",
+
+                // Permisos de Roles
+                @"CREATE TABLE IF NOT EXISTS Permisos (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    Rol TEXT NOT NULL,
+                    Modulo TEXT NOT NULL, -- Circulacion, Catalogo, Socios, Reportes, Config
+                    PuedeLeer INTEGER DEFAULT 1,
+                    PuedeEscribir INTEGER DEFAULT 0,
+                    PuedeEliminar INTEGER DEFAULT 0
                 );",
 
                 // Socios
@@ -64,7 +75,9 @@ namespace SistemaGestionCRA.Datos
                     Rol TEXT, -- Estudiante, Docente, Funcionario, Apoderado
                     Telefono TEXT,
                     Email TEXT,
-                    Estado TEXT DEFAULT 'Activo' -- Activo, Inactivo, Sancionado
+                    Estado TEXT DEFAULT 'Activo', -- Activo, Sancionado, Inactivo
+                    BloqueadoHasta DATETIME,
+                    FotoPath TEXT
                 );",
 
                 // Catálogo (Ejemplares)
@@ -76,11 +89,28 @@ namespace SistemaGestionCRA.Datos
                     Autor TEXT,
                     Editorial TEXT,
                     Anio INTEGER,
-                    Tipo TEXT, -- Libro, Revista, Audiovisual, etc.
+                    Tipo TEXT NOT NULL, -- Relacionado con ReglasPrestamo
                     ClasificacionDewey TEXT,
                     Cutter TEXT,
                     Ubicacion TEXT,
                     Estado TEXT DEFAULT 'Disponible' -- Disponible, Prestado, Perdido, Danado, En Reparacion
+                );",
+
+                // Campos Personalizados
+                @"CREATE TABLE IF NOT EXISTS CamposPersonalizados (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    Entidad TEXT NOT NULL, -- Socio, Ejemplar
+                    NombreCampo TEXT NOT NULL,
+                    TipoDato TEXT NOT NULL, -- Texto, Numero, Fecha, Lista
+                    OpcionesLista TEXT -- Separado por comas
+                );",
+
+                @"CREATE TABLE IF NOT EXISTS ValoresPersonalizados (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    CampoId INTEGER NOT NULL,
+                    EntidadId INTEGER NOT NULL,
+                    Valor TEXT,
+                    FOREIGN KEY (CampoId) REFERENCES CamposPersonalizados(Id)
                 );",
 
                 // Préstamos
