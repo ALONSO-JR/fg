@@ -1,0 +1,10 @@
+bin/
+obj/
+[Bb]in/
+[Oo]bj/
+*.user
+*.db
+*.log
+.vs/
+.history/
+.ionide/
